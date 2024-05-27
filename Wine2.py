@@ -28,6 +28,13 @@ def split_x_and_y(dataset, class_position=-1):
     return x, y
 
 
+def get_dataset_from_middle(dataset, lower_percentage, upper_percentage):
+    start_index = int(lower_percentage * len(dataset))
+    end_index = int(upper_percentage * len(dataset))
+    _middle_set = dataset[start_index:end_index]
+    return _middle_set
+
+
 if __name__ == '__main__':
     x1 = float(input())
     x2 = float(input())
@@ -39,21 +46,17 @@ if __name__ == '__main__':
     bayes_train1_set, _ = split_dataset(class_1_set, x1)
     bayes_train2_set, _ = split_dataset(class_2_set, x1)
     bayes_train_set = bayes_train0_set + bayes_train1_set + bayes_train2_set
-    # bayes_train_set = bayes_train2_set + bayes_train1_set + bayes_train0_set
     bayes_train_x, bayes_train_y = split_x_and_y(bayes_train_set)
     bayes_classifier.fit(bayes_train_x, bayes_train_y)
 
     # =========================================================
 
     tree_classifier = DecisionTreeClassifier(random_state=0)
-    start_index = int(x1 * len(class_0_set))
-    end_index = int(x2 * len(class_0_set))
-    tree_train0_set = class_0_set[start_index:end_index]
-    tree_train1_set = class_1_set[start_index:end_index]
-    tree_train2_set = class_2_set[start_index:end_index]
+    tree_train0_set = get_dataset_from_middle(class_0_set, x1, x2)
+    tree_train1_set = get_dataset_from_middle(class_1_set, x1, x2)
+    tree_train2_set = get_dataset_from_middle(class_2_set, x1, x2)
 
     tree_train_set = tree_train0_set + tree_train1_set + tree_train2_set
-    # tree_train_set = tree_train2_set + tree_train1_set + tree_train0_set
     tree_train_x, tree_train_y = split_x_and_y(tree_train_set)
     tree_classifier.fit(tree_train_x, tree_train_y)
 
@@ -64,7 +67,6 @@ if __name__ == '__main__':
     forest_train1_set, _ = split_dataset(class_1_set, x2)
     forest_train2_set, _ = split_dataset(class_2_set, x2)
     forest_train_set = forest_train0_set + forest_train1_set + forest_train2_set
-    # forest_train_set = forest_train2_set + forest_train1_set + forest_train0_set
     forest_train_x, forest_train_y = split_x_and_y(forest_train_set)
     forest_classifier.fit(forest_train_x, forest_train_y)
 
